@@ -1,6 +1,5 @@
 package palworldconfig.parameter;
 
-import palworldconfig.model.exp.BizException;
 
 public enum EExceptionEnum {
 	/**
@@ -22,11 +21,4 @@ public enum EExceptionEnum {
 		this.errCode = errCode;
 	}
 
-	public void error() throws BizException {
-		throw new BizException(this.errCode);
-	}
-
-	public void error(String errMsg) throws BizException {
-		throw new BizException(this.errCode, errMsg);
-	}
 }

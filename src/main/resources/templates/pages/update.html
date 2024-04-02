@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>企业信息</title>
+    <link href="//unpkg.com/layui@2.9.6/dist/css/layui.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <style>
+        .layui-form-label {
+            min-width: 10em;
+            width: 12em;
+        }
+
+        .layui-input-block {
+            margin-left: 15em;
+            width: 12em;
+        }
+
+    </style>
+</head>
+
+<body>
+<form class="layui-form" action="1" lay-filter="server-org-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">企业编码</label>
+        <div class="layui-input-block">
+            <input name="eps_num" type="text" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">企业标准名称</label>
+        <div class="layui-input-block">
+            <input name="eps_nme" type="text" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">企业长名称</label>
+        <div class="layui-input-block">
+            <input name="eps_lnm" type="text" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">企业社会信用代码</label>
+        <div class="layui-input-block">
+            <input name="eps_cde" type="text" class="layui-input">
+        </div>
+    </div>
+    <button class="layui-btn layui-btn-primary" lay-submit lay-filter="eps-add">新增</button>
+</form>
+
+<script src="//unpkg.com/layui@2.9.6/dist/layui.js"></script>
+<script src="../../static/js/server.js"></script>
+</body>
+
+</html>

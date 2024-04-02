@@ -1,7 +1,9 @@
 package palworldconfig.config;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.http.ResponseEntity;
+import palworldconfig.model.LayTableVo;
 import palworldconfig.model.ResponseCommonVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,25 +32,39 @@ public class ResponseAdviceConfig implements ResponseBodyAdvice<Object> {
 
 	@Override
 	public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-		String result = "";
+		Object result = "";
 		if (body == null) {
 			result = "";
+			ResponseCommonVo responseBody = new ResponseCommonVo();
+			responseBody.setCode(0);
+			responseBody.setResult(result);
+			String jsonString = JSONObject.toJSONString(responseBody);
+			logger.info("responseBody ===> " + jsonString);
+			return jsonString;
 		} else if (body instanceof ResponseCommonVo) {
 			String jsonString = JSONObject.toJSONString(body);
 			logger.info("responseBody ===> " + jsonString);
 			return jsonString;
 		} else if (body instanceof JSONObject) {
-			result = ((JSONObject) body).toString();
-		} else {
-			result = JSONObject.toJSON(body).toString();
-		}
+			result = body;
 
-		ResponseCommonVo responseBody = new ResponseCommonVo();
-		responseBody.setCode("0");
-		responseBody.setResult(result);
-		String jsonString = JSONObject.toJSONString(responseBody);
-		logger.info("responseBody ===> " + jsonString);
-		return jsonString;
+			ResponseCommonVo responseBody = new ResponseCommonVo();
+			responseBody.setCode(0);
+			responseBody.setResult(result);
+			String jsonString = JSONObject.toJSONString(responseBody);
+			logger.info("responseBody ===> " + jsonString);
+			return jsonString;
+		}  else if (body instanceof LayTableVo){
+			return body;
+		} else {
+			result = JSON.toJSON(body);
+			ResponseCommonVo responseBody = new ResponseCommonVo();
+			responseBody.setCode(0);
+			responseBody.setResult(result);
+			String jsonString = JSONObject.toJSONString(responseBody);
+			logger.info("responseBody ===> " + jsonString);
+			return jsonString;
+		}
 	}
 
 
@@ -64,7 +80,7 @@ public class ResponseAdviceConfig implements ResponseBodyAdvice<Object> {
 		}
 
 		ResponseCommonVo responseBody = new ResponseCommonVo();
-		responseBody.setCode("-1");
+		responseBody.setCode(-1);
 		responseBody.setResult(e.getMessage());
 		responseBody.setStackTrace(sb.toString());
 		return responseBody;

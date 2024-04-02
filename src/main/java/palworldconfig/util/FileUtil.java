@@ -1,6 +1,6 @@
 package palworldconfig.util;
 
-import palworldconfig.model.PalWorldSettings;
+import palworldconfig.model.EpsVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,11 +74,11 @@ public class FileUtil {
 
 	}
 
-	public PalWorldSettings extractKeyValuePairs(String input) throws Exception {
+	public EpsVo extractKeyValuePairs(String input) throws Exception {
 		Pattern pattern = Pattern.compile("\\(([^)]+)\\)");
 		Matcher matcher = pattern.matcher(input);
 
-		PalWorldSettings configFile = new PalWorldSettings();
+		EpsVo configFile = new EpsVo();
 		while (matcher.find()) {
 			String content = matcher.group(1);
 			String[] pairs = content.split(",");

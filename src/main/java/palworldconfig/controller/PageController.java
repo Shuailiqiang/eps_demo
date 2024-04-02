@@ -7,10 +7,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import palworldconfig.model.EpsVo;
 
 @RequestMapping({""})
 @Controller
@@ -23,9 +23,12 @@ public class PageController {
 		return "index";
 	}
 
-	@GetMapping("/serverStatus")
-	public String server() {
-		return "pages/server";
+	@GetMapping("/page/update")
+	public String updatePage(@RequestParam String eps_num, RedirectAttributes attribdatautes) {
+		EpsVo epsVO = new EpsVo();
+		epsVO.setEps_nme(eps_num);
+		attribdatautes.addAttribute(epsVO);
+		return "pages/update";
 	}
 
 	@GetMapping("/serverConfig")

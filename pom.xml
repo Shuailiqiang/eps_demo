@@ -100,7 +100,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>palworldconfig.PalWorldConfigApplication</mainClass>
+                            <mainClass>palworldconfig.ESPApplication</mainClass>
                         </manifest>
                         <manifestEntries>
                             <Class-Path>config/.</Class-Path>

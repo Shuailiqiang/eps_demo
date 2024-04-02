@@ -1,23 +1,23 @@
 package palworldconfig.model;
 
 public class ResponseCommonVo {
-	private String code;
-	private String result;
+	private int code;
+	private Object result;
 	private String stackTrace; // 异常信息
 
-	public String getCode() {
+	public int getCode() {
 		return code;
 	}
 
-	public void setCode(String code) {
+	public void setCode(int code) {
 		this.code = code;
 	}
 
-	public String getResult() {
+	public Object getResult() {
 		return result;
 	}
 
-	public void setResult(String result) {
+	public void setResult(Object result) {
 		this.result = result;
 	}
 

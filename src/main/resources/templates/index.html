@@ -11,32 +11,126 @@
 </head>
 
 <body>
-<ul class="layui-nav">
-    <li class="layui-nav-item layui-this">
-        <a href="/serverStatus" target="mainframe">服务器</a>
-    </li>
-    <li class="layui-nav-item">
-        <a href="/serverConfig" target="mainframe">配置</a>
-    </li>
-    <li class="layui-nav-item">
-        <a href="/serverSaved" target="mainframe">存档</a>
-    </li>
-<!--    <li class="layui-nav-item">-->
-<!--        <a href="https://palworld.caimogu.cc/breed.html" target="mainframe">配种</a>-->
-<!--    </li>-->
-<!--    <li class="layui-nav-item">-->
-<!--        <a href="https://map.caimogu.cc/palworld/paru_islands.html" target="mainframe">地图</a>-->
-<!--    </li>-->
-</ul>
-<iframe class="main-frame" id="main-frame" name="mainframe" src="/serverStatus"></iframe>
-<script>
-    var iframe = document.getElementById("main-frame");
-    iframe.style.height = (window.innerHeight - 65) + 'px';
-    window.onresize = function () {
-        iframe.style.height = (window.innerHeight - 65) + 'px';
-    }
-</script>
+
+<table class="layui-hide" id="demo" lay-filter="test"></table>
+
 <script src="//unpkg.com/layui@2.9.6/dist/layui.js"></script>
+<script>
+    //加载模块
+    layui.use(function(){
+
+        var layer = layui.layer //弹层
+            ,laypage = layui.laypage //分页
+            ,table = layui.table //表格
+            ,upload = layui.upload //上传
+
+        table.render({
+            elem: '#demo'
+            ,height: 420
+            ,url: '/eps/query' //数据接口
+            ,title: '企业信息'
+            ,page: true //开启分页
+            ,toolbar: 'default' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+            // ,parseData: function(res) { //res 即为原始返回的数据
+            //     console.log(res);
+            //     return {
+            //         "code": res.result.code, //解析接口状态
+            //         "msg":  res.result.msg, //解析提示文本
+            //         "count": res.result.count, //解析数据长度
+            //         "data": res.result.data //解析数据列表
+            //     };
+            // }
+            ,cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    ,{field: 'eps_num', title: '企业编码', width:120, sort: true, fixed: 'left'}
+                    ,{field: 'eps_nme', title: '企业标准名称', width:120, sort: true}
+                    ,{field: 'eps_lnm', title: '企业长名称', width:120, sort: true}
+                    ,{field: 'eps_cde', title: '企业社会信用代码', width:120, sort: true}
+                ]
+            ]
+        });
+
+        //监听头工具栏事件
+        table.on('toolbar(test)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id)
+                ,data = checkStatus.data; //获取选中的数据
+            switch(obj.event){
+                case 'add':
+                    layer.msg('添加');
+                    break;
+                case 'update':
+                    if(data.length === 0){
+                        layer.msg('请选择一行');
+                    } else if(data.length > 1){
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        console.log(checkStatus.data);
+                        var requestParam = JSON.stringify(checkStatus.data);
+                        console.log('1 ===> ',requestParam);
+                        var obj = requestParam[0];
+                        console.log('2 ===> ',obj);
+                        console.log('3 ===> ',obj.eps_num);
+                        layer.open({
+                            type: 2
+                            ,title: false //不显示标题栏
+                            ,closeBtn: false
+                            ,area: '300px;'
+                            ,shade: 0.8
+                            ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                            ,btn: ['修改', '取消']
+                            ,btnAlign: 'c'
+                            ,moveType: 1 //拖拽模式，0或者1
+                            ,content: '/page/update?eps_num=' + checkStatus.data.eps_num
+                            ,success: function(layero){
+                                var btn = layero.find('.layui-layer-btn');
+                                btn.find('.layui-layer-btn0').attr({
+                                    href: '../index.html'
+                                    ,target: '_blank'
+                                });
+                            }
+                        });
+                    }
+                    break;
+                case 'delete':
+                    if(data.length === 0){
+                        layer.msg('请选择一行');
+                    } else {
+                        layer.msg('删除');
+                    }
+                    break;
+            };
+        });
+
+        //分页
+        laypage.render({
+            elem: 'pageDemo' //分页容器的id
+            ,count: 1000 //数据总数
+            ,limit: 10 //每页显示的数据条数
+            ,skin: '#1E9FFF' //自定义选中色值
+            //,layout: ['prev', 'page', 'next', 'count', 'limit', 'refresh', 'skip'] //自定义排版
+            ,jump: function(obj, first){
+                if(!first){
+                    layer.msg('第'+ obj.curr +'页', {offset: 'b'});
+                }
+            }
+        });
+
+        //上传
+        upload.render({
+            elem: '#uploadDemo'
+            ,url: '' //此处配置你自己的上传接口即可
+            ,done: function(res){
+                layer.msg('上传成功');
+                layui.$('#uploadDemoView').removeClass('layui-hide').find('img').attr('src', res.files.file);
+                console.log(res)
+            }
+            ,before: function(){
+                layer.msg('上传中', {icon: 16, time: 0});
+            }
+        });
+    });
+</script>
 </body>
 
 </html>

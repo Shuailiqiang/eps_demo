@@ -1,124 +1,66 @@
 package palworldconfig.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import palworldconfig.model.PalWorldSettings;
-import palworldconfig.service.IServerHandlerService;
-import palworldconfig.util.FileUtil;
-import palworldconfig.util.ListUtil;
-import palworldconfig.util.OSUtil;
-import palworldconfig.util.StringUtil;
+import palworldconfig.model.EpsVo;
+import palworldconfig.service.IEPSHandlerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ServerHandlerService implements IServerHandlerService {
+public class ServerHandlerService implements IEPSHandlerService {
 
 	private Logger logger = LoggerFactory.getLogger(getClass());
 
+
 	@Override
-	public boolean startServer() throws Exception {
-		List<String> pidList = OSUtil.getPidList();
-		if (ListUtil.isNotEmpty(pidList)) {
-			throw new Exception("服务器已启动!");
-		}
-		new Thread(() -> {
-			try {
-				OSUtil.execCmd("cmd /c start " + FileUtil.getInstance().getServerPath() + "\\PalServer.exe");
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}).start();
-		return true;
+	public void add() throws Exception {
+
 	}
 
 	@Override
-	public boolean stopServer() throws Exception {
-		List<String> pidList = OSUtil.getPidList();
-		if (ListUtil.isEmpty(pidList)) {
-			throw new Exception("服务器未启动!");
-		}
+	public void update() throws IOException {
 
-		for (String pid : pidList) {
-			OSUtil.execCmd("taskkill /F /PID " + pid);
-		}
-		return false;
 	}
 
 	@Override
-	public String getServerStatus() throws IOException {
-		List<String> pidList = OSUtil.getPidList();
-		return ListUtil.isNotEmpty(pidList) ? "Y" : "N";
+	public void delete() throws Exception {
+
 	}
 
 	@Override
-	public PalWorldSettings getServerConfig() throws Exception {
-		String serverPath = FileUtil.getInstance().getServerPath();
-		if (StringUtil.isEmpty(serverPath)) {
-			throw new Exception("未能获取服务器文件目录");
-		}
-		String configFilePath = serverPath + "\\Pal\\Saved\\Config\\WindowsServer\\PalWorldSettings.ini";
-		File configFile = new File(configFilePath);
-		if (!configFile.exists()) {
-			throw new Exception("未能获取服务器配置文件信息");
-		}
-		String content = FileUtil.getInstance().retrieveFileContent(configFile);
+	public List<EpsVo> query() throws Exception {
+		List<EpsVo> list = new ArrayList<>();
+		EpsVo item1 = new EpsVo();
+		item1.setEps_num("企业编码001");
+		item1.setEps_nme("企业标准名称001");
+		item1.setEps_lnm("企业长名称001");
+		item1.setEps_cde("企业社会信用代码001");
+		list.add(item1);
 
-		PalWorldSettings palWorldSettings = FileUtil.getInstance().extractKeyValuePairs(content);
+		EpsVo item2 = new EpsVo();
+		item2.setEps_num("企业编码002");
+		item2.setEps_nme("企业标准名称002");
+		item2.setEps_lnm("企业长名称002");
+		item2.setEps_cde("企业社会信用代码002");
+		list.add(item2);
 
-		return palWorldSettings;
+		EpsVo item3 = new EpsVo();
+		item3.setEps_num("企业编码003");
+		item3.setEps_nme("企业标准名称003");
+		item3.setEps_lnm("企业长名称003");
+		item3.setEps_cde("企业社会信用代码003");
+		list.add(item3);
+
+		EpsVo item4 = new EpsVo();
+		item4.setEps_num("企业编码004");
+		item4.setEps_nme("企业标准名称004");
+		item4.setEps_lnm("企业长名称004");
+		item4.setEps_cde("企业社会信用代码004");
+		list.add(item4);
+		return list;
 	}
-
-	@Override
-	public PalWorldSettings getDefaultServerConfig() throws Exception {
-		String serverPath = FileUtil.getInstance().getServerPath();
-		if (StringUtil.isEmpty(serverPath)) {
-			throw new Exception("未能获取服务器文件目录");
-		}
-		String defaultConfigFilePath = serverPath + "\\DefaultPalWorldSettings.ini";
-		File defaultConfigFile = new File(defaultConfigFilePath);
-		if (!defaultConfigFile.exists()) {
-			throw new Exception("未能获取服务器配置文件信息");
-		}
-		String content = FileUtil.getInstance().retrieveFileContent(defaultConfigFile);
-
-		PalWorldSettings palWorldSettings = FileUtil.getInstance().extractKeyValuePairs(content);
-		return palWorldSettings;
-	}
-
-	@Override
-	public void modifyServerConfig(PalWorldSettings palWorldSettings) throws Exception {
-		String serverStatus = getServerStatus();
-		if ("Y".equals(serverStatus)) {
-			throw new Exception("请先关闭服务器再进行修改");
-		}
-		String settingFileString = palWorldSettings.toSettingFileString();
-		logger.info("new palWorldSettings ===> " + settingFileString);
-		String serverPath = FileUtil.getInstance().getServerPath();
-		if (StringUtil.isEmpty(serverPath)) {
-			throw new Exception("未能获取服务器文件目录");
-		}
-
-		String configFilePath = serverPath + "\\Pal\\Saved\\Config\\WindowsServer\\PalWorldSettings.ini";
-		File configFile = new File(configFilePath);
-		//将原来的配置文件备份
-		FileUtil.getInstance().backFile(configFilePath, configFile.getParent() + "\\bakini");
-
-		try (FileOutputStream fos = new FileOutputStream(configFile);
-			 OutputStreamWriter osw = new OutputStreamWriter(fos, FileUtil.getInstance().getCharset())) {
-
-			logger.info("writeFile ===> " + palWorldSettings);
-			osw.write(settingFileString);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-
-
 }
